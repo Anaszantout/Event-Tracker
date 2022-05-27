@@ -3,6 +3,7 @@ import IEvent from '../../models/IEvent'
 import './AddEventModal.css'
 import axios from 'axios'
 
+
 type props = {
   closeModal: () => void,
   addEvent: (event: IEvent) => Promise<void>
@@ -10,39 +11,60 @@ type props = {
 
 const AddEventModal:FC<props> = ({ closeModal, addEvent }) => {
 
-  const [formData, setFormData] = useState<IEvent>({
+
+  const [verification, setVerification] = useState(true)
+
+
+  const handleSubmit:React.FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault()
+    if(formData.title === '' || time === '') {
+      setVerification(false);
+      console.log('error');
+      return
+    } else {
+      setVerification(true)
+    }
+
+    const event:IEvent = {...formData, timestamp: Date.parse(time)}
+
+    addEvent(event)
+
+  }
+
+
+  const [formData, setFormData] = useState<IEvent> ({
     title: '',
     description: '',
     timestamp: 0
   })
 
-  const [time, setTime] = useState('')
+  const [time, setTime] = useState ('')
 
-  
-  const bgRef = useRef<HTMLDivElement>(null)
-  
+
+  const bgRef = useRef<HTMLDivElement> (null)
+
   const handleClick:React.MouseEventHandler<HTMLDivElement> = (e) => {
     if(e.target === bgRef.current) {
       closeModal()
     }
   }
-  
+
   const handleChange:React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
     setFormData(state => {
       return {...state,
         [e.target.name]: e.target.value
       }
     })
+
   }
+
   
-  const handleSubmit:React.FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault()
 
-    const event:IEvent = {...formData, timestamp: Date.parse(time)}
 
-    addEvent(event)
-    
-  }
+
+
+
+
 
   return (
     <div className='modal-bg' onClick={handleClick} ref={bgRef} >
@@ -52,10 +74,11 @@ const AddEventModal:FC<props> = ({ closeModal, addEvent }) => {
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label htmlFor="title">Title: </label>
+            {/* {!title.length && <p>No events to show</p>} */}
             <input type="text" className='form-control' id='title' name="title" value={formData.title} onChange={handleChange} />
           </div>
           <div className="input-group">
-            <label htmlFor="timestamp">Title: </label>
+            <label htmlFor="timestamp">Date : </label>
             <input type="datetime-local" className='form-control' id='timestamp' name="timestamp" value={time} onChange={(e) => setTime(e.target.value)} />
           </div>
           <div className="input-group">
@@ -65,6 +88,7 @@ const AddEventModal:FC<props> = ({ closeModal, addEvent }) => {
           <div className='d-flex'>
             <button className='btn btn-outline ml-auto'>Add Event</button>
           </div>
+          {!verification && <p>You must fill out everything!</p>}
         </form>
       </div>
     </div>
