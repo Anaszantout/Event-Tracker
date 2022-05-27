@@ -1,0 +1,18 @@
+.navbar {
+    margin-block: 2rem;
+    border: 2px solid  ;
+    border-radius: 1.2rem;
+    background-color: #e7a452;
+    justify-items: center;
+    
+  }
+  .navbar .title {
+    font-size: 3rem;
+  }
+  .title{
+    
+    font-style: oblique;
+  }
+  .add{
+   
+  }
